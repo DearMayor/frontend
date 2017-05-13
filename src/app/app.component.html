@@ -1,3 +1,57 @@
-<h1>
-  {{title}}
-</h1>
+<!-- this creates a google map on the page with the given lat/lng from -->
+<!-- the component as the initial center of the map: -->
+
+<sebm-google-map
+  [latitude]="lat"
+  [longitude]="lng"
+  [zoom]="zoom">
+
+  <div *ngIf="data">
+    <sebm-google-map-marker
+    *ngFor="let hit of data.hits.hits; let i = index"
+    [latitude]="hit._source.location.lat"
+    [longitude]="hit._source.location.lon"
+    (markerClick)="markerClicked(infoWindow)">
+
+    <sebm-google-map-info-window #infoWindow>
+      <img *ngIf="hit._source.image" [src]="hit._source.image">
+      <p><strong>Votes </strong><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></p>
+      <p><strong>Category</strong> {{hit._source.category}}</p>
+      <p><strong>Status</strong> {{hit._source.status}}</p>
+      <strong>Comments</strong>
+        <ul>
+          <li *ngFor="let comment of hit._source.comments">
+            {{comment.value}}
+          </li>
+        </ul>
+    </sebm-google-map-info-window>
+
+    </sebm-google-map-marker>
+  </div>
+
+</sebm-google-map>
+
+<div class="card map-controls">
+  <div class='facet-container' *ngIf="data">
+    <h3>Categories</h3>
+    <ul>
+      <li class="checkbox checkbox-facets" *ngFor="let category of data.aggregations.categories.buckets">
+        <label>
+           <input class="include-facet" [checked]="isFacetSelected('category', category.key)" (click)="handleFacetClick('category', category.key)" type="checkbox">
+           <span>{{category.key}}</span>
+           <span class="facet-label label"><span class="facet-count pull-right">{{ category.doc_count }}</span></span>
+        </label>
+      </li>
+    </ul>
+    <h3>Status</h3>
+    <ul>
+      <li class="checkbox checkbox-facets" *ngFor="let status of data.aggregations.status.buckets">
+        <label>
+           <input class="include-facet" [checked]="isFacetSelected('status', status.key)" (click)="handleFacetClick('status', status.key)" type="checkbox">
+           <span>{{status.key}}</span>
+           <span class="facet-label label"><span class="facet-count pull-right">{{ status.doc_count }}</span></span>
+        </label>
+      </li>
+    </ul>
+  </div>
+</div>

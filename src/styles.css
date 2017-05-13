@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+.logo {
+    height: 30px;
+}
+
+.navbar-default {
+    background-color: #1D2D3D !important;
+    color: white !important;
+}
+
+.navbar-default a {
+    color: white !important;
+}
